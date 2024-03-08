@@ -72,7 +72,6 @@ public class TerritoryController {
         System.out.println(territory.toString());
         return new Result<>(true,ResponseMessage.SUCCESS,territoryService.save(territory));
     }
-
     @RequestMapping("/updateTerritory")
     public Result<?> update(Territory territory) {
         return new Result<>(true,ResponseMessage.SUCCESS,territoryService.update(territory));
