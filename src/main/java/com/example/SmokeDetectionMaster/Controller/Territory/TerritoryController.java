@@ -69,6 +69,7 @@ public class TerritoryController {
 
     @RequestMapping("/createTerritory")
     public Result<?> create(Territory territory) {
+        System.out.println(territory.toString());
         return new Result<>(true,ResponseMessage.SUCCESS,territoryService.save(territory));
     }
 
@@ -79,7 +80,12 @@ public class TerritoryController {
     @RequestMapping("/deleteTerritory")
     public Result<?> delete( int id) {
         System.out.println(id);
-        return new Result<>(true,ResponseMessage.SUCCESS,territoryService.delete(id));
+        if(territoryService.delete(id)==0){
+            return  new Result<>(false,ResponseMessage.FAILURE,"删除失败");
+        }else{
+            return new Result<>(true,ResponseMessage.SUCCESS,null);
+        }
+
     }
 
 

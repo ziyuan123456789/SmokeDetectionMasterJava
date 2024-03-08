@@ -33,9 +33,6 @@ public class TerritoryServiceImpl implements TerritoryService {
     }
 
 
-    public List<ShowTerritory> findAllLegal() {
-        return territoryMapper.findAllLegal();
-    }
 
     @Override
     public List<Territory> findAll() {

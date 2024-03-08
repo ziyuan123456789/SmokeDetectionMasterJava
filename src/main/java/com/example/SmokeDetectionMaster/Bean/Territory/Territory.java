@@ -13,4 +13,5 @@ public class Territory {
     private String territoryName;
     private Integer hardwareSettingId;
     private Integer territoryConfigurationId;
+    private Double storageSize;
 }

@@ -1,5 +1,9 @@
 package com.example.SmokeDetectionMaster.Controller.Territory;
 
+import com.example.SmokeDetectionMaster.Bean.Territory.Territory;
+import com.example.SmokeDetectionMaster.Bean.TerritoryConfiguration.TerritoryConfiguration;
+import com.example.SmokeDetectionMaster.Bean.Utils.ResponseMessage;
+import com.example.SmokeDetectionMaster.Bean.Utils.Result;
 import com.example.SmokeDetectionMaster.Service.Territory.TerritoryConfiguration.TerritoryConfigurationService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
@@ -20,5 +24,29 @@ import org.springframework.web.bind.annotation.RestController;
 public class TerritoryConfigurationController {
     @Autowired
     private TerritoryConfigurationService territoryConfigurationService;
+    @RequestMapping("/getAll")
+    public Result<?> getAllTerritory(){
+        return new Result<>(true, ResponseMessage.SUCCESS,territoryConfigurationService.findAll());
+    }
+
+    @RequestMapping("/getById")
+    public Result<?> getById(int id) {
+        return new Result<>(true,ResponseMessage.SUCCESS,territoryConfigurationService.findById(id));
+    }
+
+    @RequestMapping("/create")
+    public Result<?> create(TerritoryConfiguration territoryConfiguration) {
+        return new Result<>(true,ResponseMessage.SUCCESS,territoryConfigurationService.save(territoryConfiguration));
+    }
+
+    @RequestMapping("/update")
+    public Result<?> update(TerritoryConfiguration territoryConfiguration) {
+        return new Result<>(true,ResponseMessage.SUCCESS,territoryConfigurationService.update(territoryConfiguration));
+    }
+    @RequestMapping("/delete")
+    public Result<?> delete( int id) {
+        System.out.println(id);
+        return new Result<>(true,ResponseMessage.SUCCESS,territoryConfigurationService.delete(id));
+    }
 
 }

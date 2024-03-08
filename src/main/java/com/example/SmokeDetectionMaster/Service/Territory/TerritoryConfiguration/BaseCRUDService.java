@@ -11,7 +11,7 @@ import java.util.List;
 public interface BaseCRUDService<T> {
     List<T> findAll();
     T findById(int id);
-    T save(Territory territory);
-    T update(Territory territory);
+    T save(T t);
+    T update(T t);
     Integer delete(int id);
 }

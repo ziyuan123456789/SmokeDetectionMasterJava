@@ -10,5 +10,4 @@ import lombok.Data;
 public class HardwareSetting {
     private Integer hardwareSettingId;
     private String hardwareName;
-    private Double storageSize;
 }

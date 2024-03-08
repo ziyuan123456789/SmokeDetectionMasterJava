@@ -17,13 +17,13 @@ import java.util.List;
  */
 @Mapper
 public interface TerritoryMapper {
-    @Select("SELECT t.*,h.`HardwareName`,h.`StorageSize`,tc.`Action` FROM territory as t LEFT JOIN hardwaresetting as h ON t.`HardwareSettingId`=h.`HardwareSettingId`  LEFT JOIN territoryconfiguration as tc ON t.`TerritoryConfigurationId`=tc.`TerritoryConfigurationId`")
+    @Select("SELECT t.*,h.`HardwareName`,tc.`Action` FROM territory as t LEFT JOIN hardwaresetting as h ON t.`HardwareSettingId`=h.`HardwareSettingId`  LEFT JOIN territoryconfiguration as tc ON t.`TerritoryConfigurationId`=tc.`TerritoryConfigurationId`")
     List<ShowTerritory> findAllLegal();
 
     @Select("SELECT * FROM territory WHERE TerritoryId = #{id}")
     Territory findById(int id);
 
-    @Insert("INSERT INTO territory(TerritoryName, HardwareSettingId, TerritoryConfigurationId) VALUES(#{territoryName}, #{hardwareSettingId}, #{territoryConfigurationId})")
+    @Insert("INSERT INTO territory(TerritoryName, HardwareSettingId, TerritoryConfigurationId,StorageSize) VALUES(#{territoryName}, #{hardwareSettingId}, #{territoryConfigurationId},#{storageSize})")
     @Options(useGeneratedKeys = true, keyProperty = "territoryId")
     Integer insert(Territory territory);
 
