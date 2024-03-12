@@ -1,6 +1,6 @@
 package com.example.SmokeDetectionMaster.Service.Territory.Impl;
 
-import com.example.SmokeDetectionMaster.Bean.Territory.ShowTerritory;
+import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryAdminVo;
 import com.example.SmokeDetectionMaster.Bean.Territory.Territory;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryRequestDto;
 import com.example.SmokeDetectionMaster.Mapper.Territory.TerritoryMapper;
@@ -22,7 +22,7 @@ public class TerritoryServiceImpl implements TerritoryService {
     private TerritoryMapper territoryMapper;
 
     @Override
-    public List<ShowTerritory> findAvailableTerritories() {
+    public List<TerritoryAdminVo> findAvailableTerritories() {
         return territoryMapper.findAllLegal();
     }
 

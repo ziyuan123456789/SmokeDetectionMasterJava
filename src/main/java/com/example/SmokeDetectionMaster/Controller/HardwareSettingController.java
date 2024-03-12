@@ -16,7 +16,7 @@ import java.util.List;
  * @since 2024.02
  */
 @Api(tags = "硬件管理")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
 @RestController
 @RequestMapping("/HardwareSetting")
 public class HardwareSettingController {

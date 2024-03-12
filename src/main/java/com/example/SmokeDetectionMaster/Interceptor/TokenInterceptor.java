@@ -1,10 +1,16 @@
 package com.example.SmokeDetectionMaster.Interceptor;
 
-import com.example.SmokeDetectionMaster.Annotations.NeedRole.NeedLogin;
-import com.example.SmokeDetectionMaster.Annotations.NeedRole.NeedTeacherRole;
+import com.example.SmokeDetectionMaster.Annotations.NeedRole.NotLogin;
+import com.example.SmokeDetectionMaster.Annotations.NeedRole.NeedAdminRole;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -18,65 +24,50 @@ import java.lang.reflect.Method;
 @Component
 @Order(1)
 @Slf4j
-    //Todo: token拦截器,没有或者非法token返回401,合法拿出id,role等扔给后续servlet
 public class TokenInterceptor implements HandlerInterceptor  {
     @Value("${jwt.secretKey}")
     String hs512Key;
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request,HttpServletResponse response,Object handler) throws Exception {
+        if (handler instanceof HandlerMethod) {
+            Method method = ((HandlerMethod) handler).getMethod();
+            NotLogin annotation = method.getAnnotation(NotLogin.class);
+            NeedAdminRole annotationAdminRole = method.getAnnotation(NeedAdminRole.class);
+            if (annotation == null) {
+                log.warn("需要登陆验证");
+                String token = request.getHeader("Authorization");
+                log.info(token);
+                if (StringUtils.isBlank(token) || !token.startsWith("Bearer ")) {
+                    log.error("没有token");
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "未携带鉴权信息");
+                    return false;
+                }
+                String role;
+                try {
+                    Claims claims = Jwts.parserBuilder()
+                            .setSigningKey(hs512Key)
+                            .build()
+                            .parseClaimsJws(token.replace("Bearer ", ""))
+                            .getBody();
+                    role = (String) claims.get("role");
+                    if (annotationAdminRole != null && !"1".equals(role)) {
+                        log.warn("越权行为发生");
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "宁不配");
+                        return false;
+                    }
+                } catch (ExpiredJwtException e) {
+                    log.error("Token过期: " + e);
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token已过期");
+                    return false;
+                } catch (JwtException e) {
+                    log.error("鉴权信息异常: " + e);
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "鉴权信息被篡改");
+                    return false;
+                }
+                return true;
+            }
+        }
         return true;
-//        if (handler instanceof HandlerMethod) {
-//            HandlerMethod handlerMethod = (HandlerMethod) handler;
-//            Method method = ((HandlerMethod) handler).getMethod();
-//            Object controller = handlerMethod.getBean();
-//            log.info("来自"+controller.getClass().getSimpleName()+"控制器");
-//            String methodName = handlerMethod.getMethod().getName();
-//            log.info("执行"+ methodName+"方法");
-//            NeedLogin annotation = method.getAnnotation(NeedLogin .class);
-//            NeedTeacherRole annotationTeacherRole = method.getAnnotation(NeedTeacherRole .class);
-            //看看有没有需要登录的注解
-//            if (annotation != null) {
-//                log.warn("需要登陆验证");
-//                String token = request.getHeader("Authorization");
-//                if (StringUtils.isBlank(token) || !token.startsWith("Bearer ")) {
-//                    log.error("没有token");
-//                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-//                    return false;
-//                }
-//                String username;
-//                String role;
-//                String id;
-//                try {
-//                    Claims claims = Jwts.parserBuilder()
-//                            .setSigningKey(hs512Key)
-//                            .build()
-//                            .parseClaimsJws(token.replace("Bearer ", ""))
-//                            .getBody();
-//                    username = (String) claims.get("username");
-//                    role = (String) claims.get("role");
-//                    id = (String) claims.get("id");
-//                    if (annotationTeacherRole != null) {
-//                        if (!"1".equals(role)) {
-//                            log.warn("不是教师触发拦截");
-//                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "宁不配");
-//                            return false;
-//                        }
-//                    }
-//                    log.info(username);
-//                    log.info(role);
-//                    log.warn(id);
-//                } catch (JwtException e) {
-//                    log.error(e.toString());
-//                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-//                    return false;
-//                }
-//                request.setAttribute("username", username);
-//                request.setAttribute("role", role);
-//                request.setAttribute("id", id);
-//                return true;
-//            }
-//        }
-//        return true;
     }
 
     @Override

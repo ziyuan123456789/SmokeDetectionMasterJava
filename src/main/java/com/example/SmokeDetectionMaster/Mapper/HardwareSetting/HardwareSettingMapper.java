@@ -23,11 +23,11 @@ public interface HardwareSettingMapper {
     @Select("SELECT * FROM hardwaresetting WHERE HardwareSettingId = #{id}")
     HardwareSetting findById(Integer id);
 
-    @Insert("INSERT INTO hardwaresetting (HardwareName, StorageSize) VALUES (#{hardwareName}, #{storageSize})")
+    @Insert("INSERT INTO hardwaresetting (HardwareName) VALUES (#{hardwareName})")
     @Options(useGeneratedKeys = true, keyProperty = "hardwareSettingId")
     Integer insert(HardwareSetting hardwareSetting);
 
-    @Update("UPDATE hardwaresetting SET HardwareName = #{hardwareName}, StorageSize = #{storageSize} WHERE HardwareSettingId = #{hardwareSettingId}")
+    @Update("UPDATE hardwaresetting SET HardwareName = #{hardwareName} WHERE HardwareSettingId = #{hardwareSettingId}")
     Integer update(HardwareSetting hardwareSetting);
 
     @Delete("DELETE FROM hardwaresetting WHERE HardwareSettingId = #{id}")

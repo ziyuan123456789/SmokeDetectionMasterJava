@@ -1,7 +1,5 @@
 package com.example.SmokeDetectionMaster.Mapper.Territory;
 
-import com.example.SmokeDetectionMaster.Bean.Territory.ShowTerritory;
-import com.example.SmokeDetectionMaster.Bean.Territory.Territory;
 import com.example.SmokeDetectionMaster.Bean.TerritoryConfiguration.TerritoryConfiguration;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -29,7 +27,7 @@ public interface TerritoryConfigurationMapper {
     @Options(useGeneratedKeys = true, keyProperty = "territoryConfigurationId")
     int insert(TerritoryConfiguration territoryConfiguration);
 
-    @Update("UPDATE TerritoryConfiguration SET Action = #{action} WHERE TerritoryConfigurationId = #{TerritoryConfigurationId}")
+    @Update("UPDATE TerritoryConfiguration SET Action = #{action} WHERE TerritoryConfigurationId = #{territoryConfigurationId}")
     int update(TerritoryConfiguration territoryConfiguration);
 
     @Delete("DELETE FROM TerritoryConfiguration WHERE TerritoryConfigurationId = #{territoryConfigurationId}")

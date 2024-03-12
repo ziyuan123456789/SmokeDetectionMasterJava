@@ -41,6 +41,7 @@ public class TerritoryConfigurationController {
 
     @RequestMapping("/update")
     public Result<?> update(TerritoryConfiguration territoryConfiguration) {
+        System.out.println(territoryConfiguration.toString());
         return new Result<>(true,ResponseMessage.SUCCESS,territoryConfigurationService.update(territoryConfiguration));
     }
     @RequestMapping("/delete")

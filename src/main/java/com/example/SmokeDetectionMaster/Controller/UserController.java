@@ -23,7 +23,7 @@ import java.util.List;
  * @since 2024.02
  */
 @Api(tags = "用户管理")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
 @RestController
 @Slf4j
 @RequestMapping("/userControl")

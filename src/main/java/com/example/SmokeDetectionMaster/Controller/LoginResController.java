@@ -1,5 +1,6 @@
 package com.example.SmokeDetectionMaster.Controller;
 
+import com.example.SmokeDetectionMaster.Annotations.NeedRole.NotLogin;
 import com.example.SmokeDetectionMaster.Bean.Smoke.User;
 import com.example.SmokeDetectionMaster.Bean.User.Dto.UserRegDto;
 import com.example.SmokeDetectionMaster.Bean.Utils.ResponseMessage;
@@ -26,7 +27,7 @@ import java.util.Map;
  * @author wsh
  */
 @Api(tags = "登陆管理")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
 @RestController
 @Slf4j
 public class LoginResController {
@@ -40,6 +41,7 @@ public class LoginResController {
     UserService userService;
 
     @RequestMapping("reg")
+    @NotLogin
     public Result<?> createUser(User user) {
         if(user.isComplete()) {
             if(userService.checkIsReg(user.getUsername())){
@@ -59,16 +61,16 @@ public class LoginResController {
 
 
     }
-
+    @NotLogin
     @RequestMapping("/checkLogin")
     public Result<?> login(@RequestParam String username, @RequestParam String password, @RequestParam String role) {
         log.info("username: " + username + " password: " + password + " role: " + role);
         User user = loginService.checkLogin(username, password, role);
-        if("wzy1".equals(username)){
-            username="wzy1";
-            role="0";
-            user=new User(2,"wzy1","0");
-        }
+//        if("wzy1".equals(username)){
+//            username="wzy1";
+//            role="0";
+//            user=new User(2,"wzy1","0");
+//        }
         if (user != null) {
             String userIdAsString = String.valueOf(user.getUserID());
             Map<String, Object> claims = new HashMap<>();

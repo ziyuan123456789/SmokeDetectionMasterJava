@@ -1,6 +1,6 @@
 package com.example.SmokeDetectionMaster.Mapper.Territory;
 
-import com.example.SmokeDetectionMaster.Bean.Territory.ShowTerritory;
+import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryAdminVo;
 import com.example.SmokeDetectionMaster.Bean.Territory.Territory;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -18,16 +18,16 @@ import java.util.List;
 @Mapper
 public interface TerritoryMapper {
     @Select("SELECT t.*,h.`HardwareName`,tc.`Action` FROM territory as t LEFT JOIN hardwaresetting as h ON t.`HardwareSettingId`=h.`HardwareSettingId`  LEFT JOIN territoryconfiguration as tc ON t.`TerritoryConfigurationId`=tc.`TerritoryConfigurationId`")
-    List<ShowTerritory> findAllLegal();
+    List<TerritoryAdminVo> findAllLegal();
 
     @Select("SELECT * FROM territory WHERE TerritoryId = #{id}")
     Territory findById(int id);
 
-    @Insert("INSERT INTO territory(TerritoryName, HardwareSettingId, TerritoryConfigurationId,StorageSize) VALUES(#{territoryName}, #{hardwareSettingId}, #{territoryConfigurationId},#{storageSize})")
+    @Insert("INSERT INTO territory(TerritoryName, HardwareSettingId, TerritoryConfigurationId,StorageSize,ConfidenceLevel) VALUES(#{territoryName}, #{hardwareSettingId}, #{territoryConfigurationId},#{storageSize},#{confidenceLevel})")
     @Options(useGeneratedKeys = true, keyProperty = "territoryId")
     Integer insert(Territory territory);
 
-    @Update("UPDATE territory SET TerritoryName = #{territoryName}, HardwareSettingId = #{hardwareSettingId}, TerritoryConfigurationId = #{territoryConfigurationId} WHERE TerritoryId = #{territoryId}")
+    @Update("UPDATE territory SET TerritoryName = #{territoryName}, HardwareSettingId = #{hardwareSettingId}, TerritoryConfigurationId = #{territoryConfigurationId} ,StorageSize=#{storageSize},ConfidenceLevel=#{confidenceLevel} WHERE TerritoryId = #{territoryId}")
     void update(Territory territory);
 
     @Delete("DELETE FROM territory WHERE TerritoryId = #{id}")
