@@ -1,6 +1,7 @@
 package com.example.SmokeDetectionMaster.Mapper.Territory;
 
-import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryAdminVo;
+import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRequest;
+import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRecordUserVo;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryUserVo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -37,8 +38,21 @@ public interface UserTerritoryMapper {
     @Insert("INSERT INTO territorychangerequest (UserId, TerritoryId, RequestStatus) VALUES (#{userId}, #{territoryId}, 'pending')")
     void insertTerritoryChangeRequest(@Param("userId") int userId, @Param("territoryId") int territoryId);
 
-    @Select("SELECT COUNT(*) FROM userterritory WHERE UserId = #{userId} " +
+    @Select("SELECT SUM(count) FROM (" +
+            "SELECT COUNT(*) as count FROM userterritory WHERE UserId = #{userId} " +
             "UNION ALL " +
-            "SELECT COUNT(*) FROM territorychangerequest WHERE UserId = #{userId} AND RequestStatus = 'pending'")
+            "SELECT COUNT(*) as count FROM territorychangerequest WHERE UserId = #{userId} AND RequestStatus = 'pending'" +
+            ") AS combinedCounts")
     Integer countUserAndPendingTerritories(int userId);
+
+    @Insert("<script>" +
+            "INSERT INTO territorychangerequest (UserId, RequestedTerritoryId, RequestStatus) VALUES " +
+            "<foreach collection='requests' item='request' separator=','>" +
+            "(#{request.userId}, #{request.requestedTerritoryId}, #{request.requestStatus})" +
+            "</foreach>" +
+            "</script>")
+    void batchInsertTerritoryChangeRequests(@Param("requests") List<TerritoryChangeRequest> requests);
+
+    @Select("SELECT tc.ChangeRequestId,tc.RequestedTerritoryId,tc.RequestDate,tc.ApprovalDate,t.`TerritoryName`,tc.`RequestStatus`,u.`Username` FROM territorychangerequest as tc left join  territory as t on t.`TerritoryId`=tc.`RequestedTerritoryId` left join `user` as u on u.`UserID`=tc.`ApproverId` WHERE tc.`UserId`= #{userId}")
+    List<TerritoryChangeRecordUserVo> getApproveState(Integer userID);
 }

@@ -1,12 +1,14 @@
 package com.example.SmokeDetectionMaster.Service.Territory.Impl;
 
-import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryAdminVo;
 import com.example.SmokeDetectionMaster.Bean.Territory.Territory;
-import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryRequestDto;
+import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryAdminVo;
+import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRecordAdminVo;
+import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryReviewResultDto;
 import com.example.SmokeDetectionMaster.Mapper.Territory.TerritoryMapper;
 import com.example.SmokeDetectionMaster.Service.Territory.TerritoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,11 +29,30 @@ public class TerritoryServiceImpl implements TerritoryService {
     }
 
     @Override
-    public void requestTerritoryChange(TerritoryRequestDto requestDto) throws Exception {
-
-
+    public List<TerritoryChangeRecordAdminVo> findAllTerritoriesApply() {
+        return territoryMapper.findAllTerritoriesApply();
     }
 
+    @Override
+    @Transactional
+    public Integer updateTerritoryChange(TerritoryReviewResultDto territoryReviewResultDto) {
+        if (territoryReviewResultDto.getApprovalOutcome()) {
+            territoryReviewResultDto.setRequestStatus("agree");
+            System.out.println(territoryReviewResultDto.toString());
+            Integer res = territoryMapper.updateTerritoryChange(territoryReviewResultDto);
+            Integer resAdd = territoryMapper.addUserTerritory(territoryReviewResultDto);
+            if (res == 1 && resAdd == 1) {
+                return 1;
+            } else {
+                return 0;
+            }
+        } else {
+            territoryReviewResultDto.setRequestStatus("refuse");
+
+            return territoryMapper.updateTerritoryChange(territoryReviewResultDto);
+        }
+
+    }
 
 
     @Override

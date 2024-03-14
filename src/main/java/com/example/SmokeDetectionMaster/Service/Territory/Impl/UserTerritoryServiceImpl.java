@@ -1,10 +1,15 @@
 package com.example.SmokeDetectionMaster.Service.Territory.Impl;
 
+import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRequest;
+import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRecordUserVo;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryUserVo;
+import com.example.SmokeDetectionMaster.Exception.TerritoryLimitExceededException;
 import com.example.SmokeDetectionMaster.Mapper.Territory.UserTerritoryMapper;
 import com.example.SmokeDetectionMaster.Service.Territory.UserTerritoryService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,33 +21,56 @@ import java.util.stream.Collectors;
  * @since 2024.02
  */
 @Service
+@Slf4j
 public class UserTerritoryServiceImpl implements UserTerritoryService {
 
     @Autowired
     private UserTerritoryMapper userTerritoryMapper;
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public List<TerritoryChangeRecordUserVo> getApproveState(Integer userID) {
+        return userTerritoryMapper.getApproveState(userID);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Map<String,Object> getAvailableTerritories(Integer userId) {
         Map<String, Object> map = new HashMap<>();
-        map.put("currentCount",userTerritoryMapper.countUserAndPendingTerritories(userId));
+        Integer allowNums = userTerritoryMapper.countUserAndPendingTerritories(userId);
+        map.put("currentCount", 4 - allowNums);
+        if (allowNums == null || allowNums < 0 || allowNums > 4) {
+            map.put("currentCount", -1);
+        }
         map.put("availableTerritories",userTerritoryMapper.findAvailableTerritories());
+        log.info(map.toString());
         return map;
     }
 
-    public void requestTerritoryChanges(int userId, List<Integer> territoryIds) throws Exception {
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void requestTerritoryChanges(int userId, List<Integer> territoryIds) throws TerritoryLimitExceededException {
         Integer currentCount = userTerritoryMapper.countUserAndPendingTerritories(userId);
+        if (currentCount == null) {
+            currentCount = 0;
+        }
         if (currentCount + territoryIds.size() > 4) {
-            throw new Exception("超过单一用户四辖区的限制");
+            throw new TerritoryLimitExceededException("超过单一用户四辖区的限制");
+        }
+        List<Integer> availableTerritoryIds = userTerritoryMapper.findAvailableTerritories().stream()
+                .map(TerritoryUserVo::getTerritoryId)
+                .collect(Collectors.toList());
+        List<TerritoryChangeRequest> requests = territoryIds.stream()
+                .filter(availableTerritoryIds::contains)
+                .map(id -> new TerritoryChangeRequest(userId, id, "pending"))
+                .collect(Collectors.toList());
+
+        if (requests.size() != territoryIds.size()) {
+            throw new TerritoryLimitExceededException("存在无效的辖区ID请求");
         }
 
-        List<TerritoryUserVo> availableTerritories = userTerritoryMapper.findAvailableTerritories();
-        List<Integer> availableTerritoryIds = availableTerritories.stream().map(TerritoryUserVo::getTerritoryId).collect(Collectors.toList());
-
-        for (Integer territoryId : territoryIds) {
-            if (!availableTerritoryIds.contains(territoryId)) {
-                throw new Exception("辖区ID为"+territoryId+"的辖区已经被他人抢注");
-            }
-            userTerritoryMapper.insertTerritoryChangeRequest(userId, territoryId);
+        if (!requests.isEmpty()) {
+            userTerritoryMapper.batchInsertTerritoryChangeRequests(requests);
         }
     }
 }

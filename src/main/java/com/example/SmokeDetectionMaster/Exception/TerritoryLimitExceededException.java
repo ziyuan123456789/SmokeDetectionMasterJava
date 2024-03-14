@@ -6,10 +6,10 @@ package com.example.SmokeDetectionMaster.Exception;
 /**
  * @author wsh
  */
-public class MyException extends Exception {
+public class TerritoryLimitExceededException extends Exception {
     private String message; //异常信息
 
-    public MyException(String message) {
+    public TerritoryLimitExceededException(String message) {
         super(message);
         this.message = message;
     }
