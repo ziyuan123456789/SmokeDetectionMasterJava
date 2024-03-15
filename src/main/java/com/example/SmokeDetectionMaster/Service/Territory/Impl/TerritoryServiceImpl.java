@@ -4,6 +4,7 @@ import com.example.SmokeDetectionMaster.Bean.Territory.Territory;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryAdminVo;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRecordAdminVo;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryReviewResultDto;
+import com.example.SmokeDetectionMaster.Bean.Territory.UserTerritoryVO;
 import com.example.SmokeDetectionMaster.Mapper.Territory.TerritoryMapper;
 import com.example.SmokeDetectionMaster.Service.Territory.TerritoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ public class TerritoryServiceImpl implements TerritoryService {
 
     @Autowired
     private TerritoryMapper territoryMapper;
+
+
 
     @Override
     public List<TerritoryAdminVo> findAvailableTerritories() {

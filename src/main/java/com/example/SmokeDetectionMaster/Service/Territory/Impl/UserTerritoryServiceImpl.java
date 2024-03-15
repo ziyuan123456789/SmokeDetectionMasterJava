@@ -2,7 +2,9 @@ package com.example.SmokeDetectionMaster.Service.Territory.Impl;
 
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRequest;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRecordUserVo;
+import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryRequestDto;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryUserVo;
+import com.example.SmokeDetectionMaster.Bean.Territory.UserTerritoryVO;
 import com.example.SmokeDetectionMaster.Exception.TerritoryLimitExceededException;
 import com.example.SmokeDetectionMaster.Mapper.Territory.UserTerritoryMapper;
 import com.example.SmokeDetectionMaster.Service.Territory.UserTerritoryService;
@@ -49,7 +51,9 @@ public class UserTerritoryServiceImpl implements UserTerritoryService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void requestTerritoryChanges(int userId, List<Integer> territoryIds) throws TerritoryLimitExceededException {
+    public void requestTerritoryChanges(TerritoryRequestDto request) throws TerritoryLimitExceededException {
+        List <Integer> territoryIds=request.getTerritoryIds();
+        Integer userId=request.getUserId();
         Integer currentCount = userTerritoryMapper.countUserAndPendingTerritories(userId);
         if (currentCount == null) {
             currentCount = 0;
@@ -62,7 +66,7 @@ public class UserTerritoryServiceImpl implements UserTerritoryService {
                 .collect(Collectors.toList());
         List<TerritoryChangeRequest> requests = territoryIds.stream()
                 .filter(availableTerritoryIds::contains)
-                .map(id -> new TerritoryChangeRequest(userId, id, "pending"))
+                .map(id -> new TerritoryChangeRequest(userId, id, "pending",request.getRemarks(),request.getTerritoryConfigurationId()))
                 .collect(Collectors.toList());
 
         if (requests.size() != territoryIds.size()) {
@@ -72,5 +76,15 @@ public class UserTerritoryServiceImpl implements UserTerritoryService {
         if (!requests.isEmpty()) {
             userTerritoryMapper.batchInsertTerritoryChangeRequests(requests);
         }
+    }
+
+    @Override
+    public List<UserTerritoryVO> getUserTerritories(Integer userId) {
+        return userTerritoryMapper.findUserTerritories(userId);
+    }
+
+    @Override
+    public Integer deleteUserTerritory(Integer id) {
+        return userTerritoryMapper.deleteUserTerritory( id);
     }
 }

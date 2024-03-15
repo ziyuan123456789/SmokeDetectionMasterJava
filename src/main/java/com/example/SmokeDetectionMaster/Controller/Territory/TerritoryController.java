@@ -6,6 +6,7 @@ import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRecordAdmi
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRecordUserVo;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryRequestDto;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryReviewResultDto;
+import com.example.SmokeDetectionMaster.Bean.Territory.UserTerritoryVO;
 import com.example.SmokeDetectionMaster.Bean.Utils.JwtUtil;
 import com.example.SmokeDetectionMaster.Bean.Utils.ResponseMessage;
 import com.example.SmokeDetectionMaster.Bean.Utils.Result;
@@ -43,7 +44,32 @@ public class TerritoryController {
     JwtUtil jwtUtil;
 
 
-    //xxx:寻找所有处在未审核状态的申请
+
+
+    @GetMapping("/deleteUserTerritory")
+    public Result<?> deleteUserTerritory(Integer id) {
+        try {
+            return new Result<>(true, ResponseMessage.SUCCESS, userTerritoryService.deleteUserTerritory(id));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new Result<>(false, ResponseMessage.SUCCESS, e.getMessage());
+        }
+    }
+
+    @GetMapping("/getUserTerritories")
+    public Result<?> getUserTerritories(HttpServletRequest request) {
+        try {
+            Claims claims = jwtUtil.parseJwt(request);
+            List<UserTerritoryVO> territories = userTerritoryService.getUserTerritories(Integer.parseInt((String) claims.get("id")));
+            return new Result<>(true, ResponseMessage.SUCCESS, territories);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new Result<>(false, ResponseMessage.SUCCESS, e.getMessage());
+        }
+    }
+
+
+    //xxx:管理员更新辖区申请请求
     @NeedAdminRole
     @GetMapping("/updateTerritoryChange")
     public Result<?> updateTerritoryChange(TerritoryReviewResultDto territoryReviewResultDto,HttpServletRequest request) {
@@ -100,7 +126,7 @@ public class TerritoryController {
     @GetMapping("/requestChanges")
     public Result<?> requestTerritoryChanges(TerritoryRequestDto request) {
         try {
-            userTerritoryService.requestTerritoryChanges(request.getUserId(), request.getTerritoryIds());
+            userTerritoryService.requestTerritoryChanges(request);
             return new Result<>(true,ResponseMessage.SUCCESS,"更新成功");
         } catch (Exception e) {
             log.error(e.getMessage(), e);

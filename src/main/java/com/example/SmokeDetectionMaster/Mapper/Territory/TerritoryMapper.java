@@ -4,6 +4,7 @@ import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryAdminVo;
 import com.example.SmokeDetectionMaster.Bean.Territory.Territory;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRecordAdminVo;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryReviewResultDto;
+import com.example.SmokeDetectionMaster.Bean.Territory.UserTerritoryVO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -35,7 +36,7 @@ public interface TerritoryMapper {
     @Delete("DELETE FROM territory WHERE TerritoryId = #{id}")
     Integer delete(int id);
 
-    @Select("SELECT tc.ChangeRequestId,tc.RequestedTerritoryId,tc.RequestDate,tc.ApprovalDate,t.`TerritoryName`,tc.`RequestStatus`,u.`Username`,u.UserID FROM territorychangerequest as tc left join  territory as t on t.`TerritoryId`=tc.`RequestedTerritoryId` left join `user` as u on u.`UserID`=tc.`UserId`")
+    @Select("SELECT tc.ChangeRequestId,tc.RequestedTerritoryId,tc.RequestDate,tc.ApprovalDate,t.`TerritoryName`,tc.`RequestStatus`,u.`Username`,u.UserID,tcf.`Action` FROM territorychangerequest as tc left join  territory as t on t.`TerritoryId`=tc.`RequestedTerritoryId`  left join `user` as u on u.`UserID`=tc.`UserId` left join territoryconfiguration as tcf on tcf.`TerritoryConfigurationId`=tc.`territoryConfigurationId` where tc.`RequestStatus`='pending'")
     List<TerritoryChangeRecordAdminVo> findAllTerritoriesApply();
 
     @Update("UPDATE territorychangerequest SET RequestStatus = #{requestStatus}, ApprovalDate = #{approvalDate}, ApproverId = #{approverId}, Remarks = #{remarks} WHERE ChangeRequestId = #{changeRequestId}")
@@ -43,5 +44,7 @@ public interface TerritoryMapper {
 
     @Insert("INSERT INTO userterritory(UserId, TerritoryId) VALUES(#{userId}, #{requestedTerritoryId})")
     Integer addUserTerritory(TerritoryReviewResultDto territoryReviewResultDto);
+
+
 
 }

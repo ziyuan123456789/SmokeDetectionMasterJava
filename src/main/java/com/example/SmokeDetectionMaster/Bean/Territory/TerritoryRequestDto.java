@@ -12,4 +12,6 @@ import java.util.List;
 public class TerritoryRequestDto {
     private Integer userId;
     private List<Integer> territoryIds;
+    private String remarks;
+    private Integer territoryConfigurationId;
 }

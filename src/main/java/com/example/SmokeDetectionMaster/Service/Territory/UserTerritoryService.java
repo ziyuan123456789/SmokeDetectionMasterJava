@@ -1,6 +1,8 @@
 package com.example.SmokeDetectionMaster.Service.Territory;
 
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRecordUserVo;
+import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryRequestDto;
+import com.example.SmokeDetectionMaster.Bean.Territory.UserTerritoryVO;
 
 import java.util.List;
 import java.util.Map;
@@ -12,5 +14,9 @@ import java.util.Map;
 public interface UserTerritoryService {
     List<TerritoryChangeRecordUserVo>getApproveState(Integer userID);
     Map<String,Object> getAvailableTerritories(Integer userID);
-    void requestTerritoryChanges(int userId, List<Integer> territoryIds) throws Exception;
+    void requestTerritoryChanges(TerritoryRequestDto request) throws Exception;
+
+    List<UserTerritoryVO> getUserTerritories(Integer userId);
+
+    Integer deleteUserTerritory(Integer id);
 }

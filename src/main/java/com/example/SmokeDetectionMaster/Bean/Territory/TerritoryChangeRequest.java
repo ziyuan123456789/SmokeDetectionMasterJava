@@ -17,12 +17,15 @@ public class TerritoryChangeRequest {
     private Integer approverId;
     private String remarks;
     private String requestStatus;
+    private Integer territoryConfigurationId;
 
 
-    public TerritoryChangeRequest(int userId, Integer id, String pending) {
+    public TerritoryChangeRequest(int userId, Integer id, String pending,String remarks,Integer territoryConfigurationId) {
         this.userId = userId;
         this.requestedTerritoryId=id;
         this.requestStatus=pending;
+        this.remarks=remarks;
+        this.territoryConfigurationId = territoryConfigurationId;
 
     }
 }

@@ -14,6 +14,7 @@ public class TerritoryChangeRecordAdminVo {
     private Integer requestedTerritoryId;
     private LocalDate requestDate;
     private String territoryName;
+    private String action;
     private String requestStatus;
     private String username;
     private Integer userId;

@@ -17,4 +17,5 @@ public class TerritoryChangeRecordUserVo {
     private String territoryName;
     private String requestStatus;
     private String username;
+    private String action;
 }
