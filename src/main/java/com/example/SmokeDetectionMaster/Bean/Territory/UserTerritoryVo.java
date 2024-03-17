@@ -7,7 +7,7 @@ import lombok.Data;
  * @since 2024.03
  */
 @Data
-public class UserTerritoryVO {
+public class UserTerritoryVo {
     private Integer id;
     private Integer territoryId;
     private String territoryName;

@@ -3,7 +3,7 @@ package com.example.SmokeDetectionMaster.Mapper.Territory;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRequest;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRecordUserVo;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryUserVo;
-import com.example.SmokeDetectionMaster.Bean.Territory.UserTerritoryVO;
+import com.example.SmokeDetectionMaster.Bean.Territory.UserTerritoryVo;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -63,7 +63,7 @@ public interface UserTerritoryMapper {
             "LEFT JOIN hardwaresetting as hs ON hs.`HardwareSettingId` = t.`HardwareSettingId` " +
             "LEFT JOIN territoryconfiguration as tcf ON tcf.`TerritoryConfigurationId` = t.`TerritoryConfigurationId` " +
             "WHERE ut.`UserId` = #{userId}")
-    List<UserTerritoryVO> findUserTerritories(Integer userId);
+    List<UserTerritoryVo> findUserTerritories(Integer userId);
     @Delete("DELETE FROM userterritory WHERE id = #{id}")
     Integer deleteUserTerritory(Integer id);
 }

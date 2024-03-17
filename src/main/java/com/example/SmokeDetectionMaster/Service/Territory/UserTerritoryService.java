@@ -2,7 +2,7 @@ package com.example.SmokeDetectionMaster.Service.Territory;
 
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRecordUserVo;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryRequestDto;
-import com.example.SmokeDetectionMaster.Bean.Territory.UserTerritoryVO;
+import com.example.SmokeDetectionMaster.Bean.Territory.UserTerritoryVo;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +16,7 @@ public interface UserTerritoryService {
     Map<String,Object> getAvailableTerritories(Integer userID);
     void requestTerritoryChanges(TerritoryRequestDto request) throws Exception;
 
-    List<UserTerritoryVO> getUserTerritories(Integer userId);
+    List<UserTerritoryVo> getUserTerritories(Integer userId);
 
     Integer deleteUserTerritory(Integer id);
 }

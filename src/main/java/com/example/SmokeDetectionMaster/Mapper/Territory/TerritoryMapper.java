@@ -4,7 +4,6 @@ import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryAdminVo;
 import com.example.SmokeDetectionMaster.Bean.Territory.Territory;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRecordAdminVo;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryReviewResultDto;
-import com.example.SmokeDetectionMaster.Bean.Territory.UserTerritoryVO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -44,7 +43,6 @@ public interface TerritoryMapper {
 
     @Insert("INSERT INTO userterritory(UserId, TerritoryId) VALUES(#{userId}, #{requestedTerritoryId})")
     Integer addUserTerritory(TerritoryReviewResultDto territoryReviewResultDto);
-
-
-
+    @Select("select  * from userterritory as ut left join territory as t on t.TerritoryId=ut.TerritoryId")
+    List<TerritoryAdminVo> findAllUserTerritories();
 }

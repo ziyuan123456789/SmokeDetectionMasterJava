@@ -6,7 +6,7 @@ import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRecordAdmi
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRecordUserVo;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryRequestDto;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryReviewResultDto;
-import com.example.SmokeDetectionMaster.Bean.Territory.UserTerritoryVO;
+import com.example.SmokeDetectionMaster.Bean.Territory.UserTerritoryVo;
 import com.example.SmokeDetectionMaster.Bean.Utils.JwtUtil;
 import com.example.SmokeDetectionMaster.Bean.Utils.ResponseMessage;
 import com.example.SmokeDetectionMaster.Bean.Utils.Result;
@@ -60,7 +60,7 @@ public class TerritoryController {
     public Result<?> getUserTerritories(HttpServletRequest request) {
         try {
             Claims claims = jwtUtil.parseJwt(request);
-            List<UserTerritoryVO> territories = userTerritoryService.getUserTerritories(Integer.parseInt((String) claims.get("id")));
+            List<UserTerritoryVo> territories = userTerritoryService.getUserTerritories(Integer.parseInt((String) claims.get("id")));
             return new Result<>(true, ResponseMessage.SUCCESS, territories);
         } catch (Exception e) {
             log.error(e.getMessage(), e);

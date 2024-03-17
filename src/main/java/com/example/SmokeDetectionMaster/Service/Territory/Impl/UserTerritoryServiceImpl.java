@@ -4,7 +4,7 @@ import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRequest;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRecordUserVo;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryRequestDto;
 import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryUserVo;
-import com.example.SmokeDetectionMaster.Bean.Territory.UserTerritoryVO;
+import com.example.SmokeDetectionMaster.Bean.Territory.UserTerritoryVo;
 import com.example.SmokeDetectionMaster.Exception.TerritoryLimitExceededException;
 import com.example.SmokeDetectionMaster.Mapper.Territory.UserTerritoryMapper;
 import com.example.SmokeDetectionMaster.Service.Territory.UserTerritoryService;
@@ -79,7 +79,7 @@ public class UserTerritoryServiceImpl implements UserTerritoryService {
     }
 
     @Override
-    public List<UserTerritoryVO> getUserTerritories(Integer userId) {
+    public List<UserTerritoryVo> getUserTerritories(Integer userId) {
         return userTerritoryMapper.findUserTerritories(userId);
     }
 
