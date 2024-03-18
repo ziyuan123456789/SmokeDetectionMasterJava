@@ -27,12 +27,14 @@ import java.lang.reflect.Method;
 public class TokenInterceptor implements HandlerInterceptor  {
     @Value("${jwt.secretKey}")
     String hs512Key;
+
     @Override
-    public boolean preHandle(HttpServletRequest request,HttpServletResponse response,Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (handler instanceof HandlerMethod) {
             Method method = ((HandlerMethod) handler).getMethod();
             NotLogin annotation = method.getAnnotation(NotLogin.class);
             NeedAdminRole annotationAdminRole = method.getAnnotation(NeedAdminRole.class);
+            System.out.println(method.getName());
             if (annotation == null) {
                 log.warn("需要登陆验证");
                 String token = request.getHeader("Authorization");
@@ -64,8 +66,11 @@ public class TokenInterceptor implements HandlerInterceptor  {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "鉴权信息被篡改");
                     return false;
                 }
+            }else{
+                log.info("无需权限验证");
                 return true;
             }
+
         }
         return true;
     }
