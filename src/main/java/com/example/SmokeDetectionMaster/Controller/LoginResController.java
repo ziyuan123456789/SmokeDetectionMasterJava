@@ -48,7 +48,7 @@ public class LoginResController {
                 return new Result<>(false, "账户已经存在",null);
             }else{
                 try{
-                    return new Result<>(true, ResponseMessage.SUCCESS,userService.saveUser(user));
+                    return new Result<>(true, ResponseMessage.SUCCESS,null);
                 }catch (Exception e){
                     e.printStackTrace();
                     return new Result<>(false, ResponseMessage.ERROR,null);

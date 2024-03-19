@@ -1,6 +1,7 @@
 package com.example.SmokeDetectionMaster.Service.UserService;
 
 import com.example.SmokeDetectionMaster.Bean.Smoke.User;
+import com.example.SmokeDetectionMaster.Bean.User.Dto.UserAdminViewDto;
 
 import java.util.List;
 
@@ -10,8 +11,8 @@ import java.util.List;
  */
 public interface UserBaseService {
     int saveUser(User user);
-    User getUserById(Integer id);
-    List<User> getAllUsers();
+    UserAdminViewDto getUserById(Integer id);
+    List<UserAdminViewDto> getAllUsers();
     int updateUser(User user);
     int deleteUser(Integer id);
 }

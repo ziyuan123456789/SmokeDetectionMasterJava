@@ -1,13 +1,14 @@
 package com.example.SmokeDetectionMaster.Service.UserService.Impl;
 
 import com.example.SmokeDetectionMaster.Bean.Smoke.User;
+import com.example.SmokeDetectionMaster.Bean.User.Dto.UserAdminViewDto;
 import com.example.SmokeDetectionMaster.Mapper.User.UserMapper;
 import com.example.SmokeDetectionMaster.Service.UserService.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,38 +22,56 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean checkIsReg(String userName) {
-        System.out.println(userName);
         Integer count = userMapper.checkIsReg(userName);
         return count != null && count > 0;
 
     }
+
     @Override
-    public int saveUser(User user) {
-        user.setSalt("123");
-        user.setRole("0");
-        user.setEnabled("1");
-        user.setRegTime(LocalDateTime.now());
-        return userMapper.insert(user);
+    public UserAdminViewDto findById(int userId) {
+        return userMapper.findById(userId);
     }
 
     @Override
-    public User getUserById(Integer id) {
-        return userMapper.findById(id);
+    public List<UserAdminViewDto> findAllActiveUsers() {
+        return userMapper.findAllActiveUsers();
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userMapper.findAll();
+    public List<UserAdminViewDto> findAllUsers() {
+        return userMapper.findAllUsers();
     }
 
     @Override
-    public int updateUser(User user) {
-        return userMapper.update(user);
+    @Transactional
+    public void banUser(int userId) {
+        userMapper.banUser(userId);
     }
 
     @Override
-    public int deleteUser(Integer id) {
-        return 0;
+    @Transactional
+    public void unbanUser(int userId) {
+        userMapper.unbanUser(userId);
+    }
+
+    @Override
+    @Transactional
+    public void createUser(String username, String role, String password,
+                           String salt, String telephone, String regTime, String enabled) {
+        userMapper.createUser(username, role, password, salt, telephone, regTime, enabled);
+    }
+
+
+    @Override
+    @Transactional
+    public void updateUserInfo(int userId, String username, String telephone) {
+        userMapper.updateUserInfo(userId, username, telephone);
+    }
+
+    @Override
+    @Transactional
+    public void updateUserPassword(int userId, String password) {
+        userMapper.updateUserPassword(userId, password);
     }
 
 

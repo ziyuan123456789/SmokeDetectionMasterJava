@@ -1,13 +1,12 @@
 package com.example.SmokeDetectionMaster.Mapper.User;
 
-import com.example.SmokeDetectionMaster.Bean.Smoke.User;
+import com.example.SmokeDetectionMaster.Bean.User.Dto.UserAdminViewDto;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-
 
 import java.util.List;
 
@@ -22,21 +21,42 @@ public interface UserMapper {
     @Select("SELECT COUNT(*) FROM user WHERE Username = #{userName}")
     Integer checkIsReg(String userName);
 
-    @Select("SELECT * FROM user WHERE UserID = #{id}")
-    User findById(Integer id);
+    // 列出所有未被封禁的用户
+    @Select("SELECT UserID, Username, Role, Telephone, regTime, Enabled FROM user WHERE Enabled = '1'")
+    List<UserAdminViewDto> findAllActiveUsers();
 
-    @Select("SELECT * FROM user")
-    List<User> findAll();
+    // 列出所有用户
+    @Select("SELECT UserID, Username, Role, Telephone, regTime, Enabled FROM user")
+    List<UserAdminViewDto> findAllUsers();
 
-    @Insert("INSERT INTO user(username, role, password, salt, telephone, regtime, enabled) " +
-            "VALUES(#{username}, #{role}, #{password}, #{salt}, #{telephone}, #{regTime}, #{enabled})")
+    // 按照ID找到用户
+    @Select("SELECT UserID, Username, Role, Telephone, regTime, Enabled FROM user where UserID=#{userId}")
+    UserAdminViewDto findById(int userId);
 
-    int insert(User user);
+    // 封禁用户
+    @Update("UPDATE user SET Enabled = '0' WHERE UserID = #{userId}")
+    void banUser(int userId);
 
-    @Update("UPDATE user SET username=#{username}, role=#{role}, password=#{password}, " +
-            "salt=#{salt}, telephone=#{telephone}, regtime=#{regTime}, enabled=#{enabled} WHERE id = #{id}")
-    int update(User user);
+    // 解封用户
+    @Update("UPDATE user SET Enabled = '1' WHERE UserID = #{userId}")
+    void unbanUser(int userId);
 
-    @Delete("DELETE FROM user WHERE UserID = #{id}")
-    int delete(Integer id);
+    // 增加用户
+    @Insert("INSERT INTO user (Username, Role, Password, Salt, Telephone, regTime, Enabled) " +
+            "VALUES (#{username}, #{role}, #{password}, #{salt}, #{telephone}, #{regTime}, #{enabled})")
+    void createUser(@Param("username") String username,
+                    @Param("role") String role,
+                    @Param("password") String password,
+                    @Param("salt") String salt,
+                    @Param("telephone") String telephone,
+                    @Param("regTime") String regTime,
+                    @Param("enabled") String enabled);
+
+    // 更新用户信息
+    @Update("UPDATE user SET Username = #{username}, Telephone = #{telephone} WHERE UserID = #{userId}")
+    void updateUserInfo(int userId, String username, String telephone);
+
+    // 修改用户密码
+    @Update("UPDATE user SET Password = #{password} WHERE UserID = #{userId}")
+    void updateUserPassword(int userId, String password);
 }
