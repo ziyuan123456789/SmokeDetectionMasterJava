@@ -1,12 +1,7 @@
 package com.example.SmokeDetectionMaster.Controller.Territory;
 
 import com.example.SmokeDetectionMaster.Annotations.NeedRole.NeedAdminRole;
-import com.example.SmokeDetectionMaster.Bean.Territory.Territory;
-import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRecordAdminVo;
-import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryChangeRecordUserVo;
-import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryRequestDto;
-import com.example.SmokeDetectionMaster.Bean.Territory.TerritoryReviewResultDto;
-import com.example.SmokeDetectionMaster.Bean.Territory.UserTerritoryVo;
+import com.example.SmokeDetectionMaster.Bean.Territory.*;
 import com.example.SmokeDetectionMaster.Bean.Utils.JwtUtil;
 import com.example.SmokeDetectionMaster.Bean.Utils.ResponseMessage;
 import com.example.SmokeDetectionMaster.Bean.Utils.Result;
@@ -60,8 +55,14 @@ public class TerritoryController {
     public Result<?> getUserTerritories(HttpServletRequest request) {
         try {
             Claims claims = jwtUtil.parseJwt(request);
-            List<UserTerritoryVo> territories = userTerritoryService.getUserTerritories(Integer.parseInt((String) claims.get("id")));
-            return new Result<>(true, ResponseMessage.SUCCESS, territories);
+            if("1".equals(claims.get("role", String.class))){
+                return new Result<>(true, ResponseMessage.SUCCESS,territoryService.findAllUserTerritories());
+
+            }else{
+                List<UserTerritoryVo> territories  = userTerritoryService.getUserTerritories(Integer.parseInt((String) claims.get("id")));
+                return new Result<>(true, ResponseMessage.SUCCESS, territories);
+            }
+
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return new Result<>(false, ResponseMessage.SUCCESS, e.getMessage());

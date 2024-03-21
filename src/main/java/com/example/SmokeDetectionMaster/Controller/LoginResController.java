@@ -111,7 +111,7 @@ public class LoginResController {
     public Result<?> reNew(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String token = request.getHeader("Authorization");
         if (StringUtils.isBlank(token) || !token.startsWith("Bearer ")) {
-            log.error("没有token");
+            log.error("reNew接口没有token");
             response.sendError(403, "未携带鉴权信息");
             return new Result<>(false, "未携带鉴权信息", null);
         } else {
