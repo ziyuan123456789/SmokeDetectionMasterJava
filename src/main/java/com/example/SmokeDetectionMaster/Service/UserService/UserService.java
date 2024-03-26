@@ -1,5 +1,6 @@
 package com.example.SmokeDetectionMaster.Service.UserService;
 
+import com.example.SmokeDetectionMaster.Bean.Smoke.User;
 import com.example.SmokeDetectionMaster.Bean.User.Dto.UserAdminViewDto;
 
 import java.util.List;
@@ -25,8 +26,7 @@ public interface UserService {
     void unbanUser(int userId);
 
     // 创建新用户
-    void createUser(String username, String role, String password,
-                    String salt, String telephone, String regTime, String enabled);
+    Integer createUser(User user);
 
 
     // 更新用户信息

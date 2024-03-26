@@ -56,7 +56,7 @@ public class LoginResController {
                 return new Result<>(false, "账户已经存在",null);
             }else{
                 try{
-                    return new Result<>(true, ResponseMessage.SUCCESS,null);
+                    return new Result<>(true, ResponseMessage.SUCCESS,userService.createUser(user));
                 }catch (Exception e){
                     e.printStackTrace();
                     return new Result<>(false, ResponseMessage.ERROR,null);
@@ -148,6 +148,7 @@ public class LoginResController {
                         .compact();
 
                 redisService.addToBlacklist(token.replace("Bearer ", ""), expirationTime * 2);
+                log.error(token.replace("Bearer ", "")+"被拉入redis黑名单");
 
                 Map<String, Object> loginMap = Map.of(
                         "id", userIdAsString,

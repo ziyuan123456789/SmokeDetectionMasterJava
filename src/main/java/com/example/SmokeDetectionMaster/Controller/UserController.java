@@ -1,23 +1,20 @@
 package com.example.SmokeDetectionMaster.Controller;
 
 import com.example.SmokeDetectionMaster.Annotations.NeedRole.NeedAdminRole;
-import com.example.SmokeDetectionMaster.Bean.Smoke.User;
+import com.example.SmokeDetectionMaster.Bean.Territory.UserTerritoryVo;
 import com.example.SmokeDetectionMaster.Bean.Utils.JwtUtil;
 import com.example.SmokeDetectionMaster.Bean.Utils.ResponseMessage;
 import com.example.SmokeDetectionMaster.Bean.Utils.Result;
+import com.example.SmokeDetectionMaster.Service.Territory.UserTerritoryService;
 import com.example.SmokeDetectionMaster.Service.UserService.UserService;
 import io.jsonwebtoken.Claims;
 import io.swagger.annotations.Api;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -36,8 +33,20 @@ public class UserController {
     private UserService userService;
     @Autowired
     JwtUtil jwtUtil;
+    @Autowired
+    UserTerritoryService userTerritoryService;
 
-
+    @NeedAdminRole
+    @GetMapping("/getUserTerritories")
+    public Result<?> getUserTerritories(Integer id) {
+        try {
+            List<UserTerritoryVo> territories = userTerritoryService.getUserTerritories(id);
+            return new Result<>(true, ResponseMessage.SUCCESS, territories);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new Result<>(false, ResponseMessage.SUCCESS, e.getMessage());
+        }
+    }
     @RequestMapping("/{id}")
     public Result getUserById(Integer id) {
         return new Result<>(true,ResponseMessage.SUCCESS,userService.findById(id));

@@ -42,11 +42,9 @@ public class TokenInterceptor implements HandlerInterceptor  {
             Method method = ((HandlerMethod) handler).getMethod();
             NotLogin annotation = method.getAnnotation(NotLogin.class);
             NeedAdminRole annotationAdminRole = method.getAnnotation(NeedAdminRole.class);
-            System.out.println(method.getName());
             if (annotation == null) {
                 log.warn("需要登陆验证");
                 String token = request.getHeader("Authorization");
-                log.info(token);
                 if (StringUtils.isBlank(token) || !token.startsWith("Bearer ")) {
                     log.error("没有token");
                     response.sendError(403, "未携带鉴权信息");

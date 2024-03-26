@@ -56,9 +56,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void createUser(String username, String role, String password,
-                           String salt, String telephone, String regTime, String enabled) {
-        userMapper.createUser(username, role, password, salt, telephone, regTime, enabled);
+    public Integer createUser(User user) {
+        return userMapper.createUser(user);
     }
 
 

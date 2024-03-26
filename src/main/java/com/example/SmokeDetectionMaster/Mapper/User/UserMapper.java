@@ -1,5 +1,6 @@
 package com.example.SmokeDetectionMaster.Mapper.User;
 
+import com.example.SmokeDetectionMaster.Bean.Smoke.User;
 import com.example.SmokeDetectionMaster.Bean.User.Dto.UserAdminViewDto;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -42,15 +43,9 @@ public interface UserMapper {
     void unbanUser(int userId);
 
     // 增加用户
-    @Insert("INSERT INTO user (Username, Role, Password, Salt, Telephone, regTime, Enabled) " +
-            "VALUES (#{username}, #{role}, #{password}, #{salt}, #{telephone}, #{regTime}, #{enabled})")
-    void createUser(@Param("username") String username,
-                    @Param("role") String role,
-                    @Param("password") String password,
-                    @Param("salt") String salt,
-                    @Param("telephone") String telephone,
-                    @Param("regTime") String regTime,
-                    @Param("enabled") String enabled);
+    @Insert("INSERT INTO user (Username, Role,Password,Salt , Telephone,  Enabled) " +
+            "VALUES (#{username},0, #{password},123, #{telephone},1)")
+    Integer createUser(User user);
 
     // 更新用户信息
     @Update("UPDATE user SET Username = #{username}, Telephone = #{telephone} WHERE UserID = #{userId}")
