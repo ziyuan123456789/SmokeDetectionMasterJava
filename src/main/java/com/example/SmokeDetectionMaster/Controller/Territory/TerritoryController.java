@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,9 +38,25 @@ public class TerritoryController {
     private UserTerritoryService userTerritoryService;
     @Autowired
     JwtUtil jwtUtil;
+    // find all images without alternate text
 
 
+    @GetMapping("/changeConfidenceLevel")
+    public Result<?> changeConfidenceLevel(Double level,Integer territoryId) {
 
+        try {
+            if(userTerritoryService.changeConfidenceLevel(territoryId,level)){
+                return new Result<>(true, ResponseMessage.SUCCESS, ResponseMessage.SUCCESS);
+            }
+            else{
+                return new Result<>(false, ResponseMessage.SUCCESS, ResponseMessage.FAILURE);
+            }
+
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new Result<>(false, ResponseMessage.SUCCESS, e.getMessage());
+        }
+    }
 
     @GetMapping("/deleteUserTerritory")
     public Result<?> deleteUserTerritory(Integer id) {
@@ -164,6 +181,14 @@ public class TerritoryController {
         }else{
             return new Result<>(true,ResponseMessage.SUCCESS,null);
         }
+
+    }
+
+    public void test(){
+        //sort
+        
+
+
 
     }
 

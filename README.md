@@ -15,3 +15,32 @@
 
 2024/3/14
 - 辖区相关的接口补全,swagger可以正常用了
+
+```mermaid
+sequenceDiagram
+    participant 管理员 as 管理员
+    participant 控制器 as 控制层
+    participant 服务 as 业务层
+    participant JWT工具 as 鉴权组件
+    participant 辖区映射器 as 映射层
+
+    管理员->>控制器: GET /updateTerritoryChange
+    控制器->>JWT工具: parseJwt(request)
+    JWT工具-->>控制器: Claims
+    控制器->>服务: updateTerritoryChange(territoryReviewResultDto)
+    alt 审批结果为同意
+        服务->>辖区映射器: updateTerritoryChange(territoryReviewResultDto)
+        辖区映射器-->>服务: 更新结果
+        服务->>辖区映射器: addUserTerritory(territoryReviewResultDto)
+        辖区映射器-->>服务: 添加结果
+        alt 更新和添加均成功
+            服务-->>控制器: 返回1
+        else 更新或添加失败
+            服务-->>控制器: 返回0
+        end
+    else 审批结果为拒绝
+        服务->>辖区映射器: updateTerritoryChange(territoryReviewResultDto)
+        辖区映射器-->>服务: 更新结果
+    end
+    控制器-->>管理员: Result(操作结果)
+```

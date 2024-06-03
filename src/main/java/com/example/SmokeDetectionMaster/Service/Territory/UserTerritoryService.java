@@ -19,4 +19,6 @@ public interface UserTerritoryService {
     List<UserTerritoryVo> getUserTerritories(Integer userId);
 
     Integer deleteUserTerritory(Integer id);
+
+    Boolean changeConfidenceLevel(Integer territoryId,Double level);
 }

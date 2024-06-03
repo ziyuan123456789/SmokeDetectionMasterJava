@@ -44,7 +44,6 @@ public class TerritoryServiceImpl implements TerritoryService {
     public Integer updateTerritoryChange(TerritoryReviewResultDto territoryReviewResultDto) {
         if (territoryReviewResultDto.getApprovalOutcome()) {
             territoryReviewResultDto.setRequestStatus("agree");
-            System.out.println(territoryReviewResultDto.toString());
             Integer res = territoryMapper.updateTerritoryChange(territoryReviewResultDto);
             Integer resAdd = territoryMapper.addUserTerritory(territoryReviewResultDto);
             if (res == 1 && resAdd == 1) {

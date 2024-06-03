@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -66,4 +67,8 @@ public interface UserTerritoryMapper {
     List<UserTerritoryVo> findUserTerritories(Integer userId);
     @Delete("DELETE FROM userterritory WHERE id = #{id}")
     Integer deleteUserTerritory(Integer id);
+
+
+    @Update("update territory set ConfidenceLevel=#{level} where TerritoryId=#{territoryId}")
+    Integer changeConfidenceLevel(Integer territoryId,Double level);
 }

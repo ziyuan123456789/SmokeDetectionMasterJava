@@ -1,5 +1,6 @@
 package com.example.SmokeDetectionMaster.Controller;
 
+import com.example.SmokeDetectionMaster.Annotations.NeedRole.NeedAdminRole;
 import com.example.SmokeDetectionMaster.Annotations.NeedRole.NotLogin;
 import com.example.SmokeDetectionMaster.Bean.Utils.JwtUtil;
 import com.example.SmokeDetectionMaster.Bean.Utils.ResponseMessage;
@@ -56,6 +57,29 @@ public class ImageController {
     @Autowired
     private ImageService imageService;
 
+
+    @GetMapping("/deleteImage")
+    public Result<?> deleteFileInPath(Integer territoryId, String year, String day, String name) {
+        if(imageService.deleteFile(territoryId, year, day, name)){
+            return new Result<>(true, ResponseMessage.SUCCESS, "删除成功");
+        }else{
+            return new Result<>(false, ResponseMessage.FAILURE, "删除失败");
+        }
+
+    }
+
+    @GetMapping("/likeImage")
+    public Result<?> likeImage(String name) {
+        if(imageService.likeImage(name)){
+            return new Result<>(true, ResponseMessage.SUCCESS, "收藏成功");
+        }else{
+            return new Result<>(false, ResponseMessage.FAILURE, "收藏失败");
+        }
+
+    }
+
+
+
     @GetMapping("/getfolders")
     public Result<?> listFolders(HttpServletRequest request) {
         List<Map<String, Object>> territoriesData = imageService.listFolders(request);
@@ -74,7 +98,7 @@ public class ImageController {
         } else {
             return userTerritoryService.getUserTerritories(userId)
                     .stream()
-                    .anyMatch(userTerritoryVo -> userTerritoryVo.getId().equals(territoryId)) ? listFilesInPath(territoryId, year, day)
+                    .anyMatch(userTerritoryVo -> userTerritoryVo.getTerritoryId().equals(territoryId)) ? listFilesInPath(territoryId, year, day)
                     : new Result<>(false, ResponseMessage.FAILURE, "该用户没有该区域权限");
         }
     }
@@ -95,8 +119,6 @@ public class ImageController {
         } else {
             return new Result<>(false, ResponseMessage.FAILURE, "不存在这个路径");
         }
-
-
     }
 
     @GetMapping("/images/{territoryId}/{year}/{day}/{imageName}")
@@ -125,6 +147,28 @@ public class ImageController {
                     .badRequest()
                     .build();
         }
+    }
+//    管理员推送截图
+    @NeedAdminRole
+    @GetMapping("/pushImage")
+    public Result<?> pushImage(String picName) {
+        if(imageService.pushImage(picName)>=1){
+            return new Result<>(true, ResponseMessage.SUCCESS, "推送成功");
+        }else {
+            return new Result<>(false, ResponseMessage.FAILURE, "推送失败");
+        }
+
+    }
+
+
+
+    @GetMapping("/getImportantScreenshotsForUser")
+    public Result<?> getImportantScreenshotsForUser(HttpServletRequest request) {
+        Claims claims = jwtUtil.parseJwt(request);
+        Integer userId = Integer.parseInt(claims.get("id", String.class));
+        return new Result<>(true, ResponseMessage.SUCCESS, imageService.getImportantScreenshotsForUser(userId));
+
+
     }
 
 

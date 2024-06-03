@@ -10,9 +10,15 @@ import com.example.SmokeDetectionMaster.Mapper.Territory.UserTerritoryMapper;
 import com.example.SmokeDetectionMaster.Service.Territory.UserTerritoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +34,12 @@ public class UserTerritoryServiceImpl implements UserTerritoryService {
 
     @Autowired
     private UserTerritoryMapper userTerritoryMapper;
+
+    @Autowired
+    private  RestTemplate restTemplate;
+
+    @Value("${fastApiUrl}")
+    String fastApiUrl;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -86,5 +98,35 @@ public class UserTerritoryServiceImpl implements UserTerritoryService {
     @Override
     public Integer deleteUserTerritory(Integer id) {
         return userTerritoryMapper.deleteUserTerritory( id);
+    }
+
+    @Override
+    public Boolean changeConfidenceLevel(Integer territoryId,Double level) {
+        if(level < 0.05 || level > 0.95){
+            return false;
+        }
+        if(userTerritoryMapper.changeConfidenceLevel(territoryId,level)!=1){
+            return false;
+        }
+        String baseUrl = fastApiUrl+"/changeUserTerritoryConfidenceLevel";
+        URI uri = UriComponentsBuilder.fromHttpUrl(baseUrl)
+                .queryParam("territoryId", territoryId)
+                .queryParam("confidenceLevel", level)
+                .build()
+                .toUri();
+
+        try {
+            ResponseEntity<Map> response = restTemplate.getForEntity(uri, Map.class);
+            if (response.getStatusCodeValue() == 403 ||
+                    (response.getBody() != null && "false".equals(response.getBody().get("success")))) {
+                return false;
+            }
+            return true;
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode().value() == 403) {
+                return false;
+            }
+            throw e;
+        }
     }
 }

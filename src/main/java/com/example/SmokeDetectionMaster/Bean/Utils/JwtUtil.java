@@ -10,6 +10,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -33,7 +34,9 @@ public class JwtUtil {
                     .getBody();
         } catch (JwtException e) {
             e.printStackTrace();
+
             return null;
+
         }
     }
 
